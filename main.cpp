@@ -7,6 +7,7 @@
 #include "monotonic-scheduler.h"
 #include "rate-monotonic.h"
 #include "deadline-monotonic.h"
+#include "earliest-deadline-first.h"
 
 
 
@@ -32,7 +33,8 @@ int main() {
 
     // ask user for the method RM/DM
     int method;
-    cout << "Enter 1 for Rate Monotonic or 2 for Deadline Monotonic: ";
+    cout << "Enter 1 for Rate Monotonic or 2 for Deadline Monotonic"
+            "\nor 3 for Earliest Deadline First: ";
     cin >> method;
 
     if (method == 1) {
@@ -41,6 +43,9 @@ int main() {
     } else if (method == 2) {
         DeadlineMonotonic dm(tasks);
         dm.printSchedule();
+    } else if (method == 3) {
+        EarliestDeadlineFirst edf(tasks);
+        edf.printSchedule();
     } else {
         cout << "Invalid method" << endl;
     }
