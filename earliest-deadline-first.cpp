@@ -1,7 +1,6 @@
 //
 // Created by Zakaria on 11/04/2023.
 //
-
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -48,58 +47,27 @@ void assignTaskToProcessor(vector<int>& timeline, const Task& task, int start_ti
 }
 
 
-void deadlineMonotonic(vector<Task>& tasks) {
-    // sort the tasks by their periods (shortest period => highest priority)
-    sort(tasks.begin(), tasks.end());
+void earliestDeadlineFirst(vector<Task>& tasks) {
 
-    // calculate the hyperperiod (lcm of all task periods)
-    int hyperperiod = 1;
-    for (auto task : tasks) {
-        hyperperiod = lcm(hyperperiod, task.deadline);
-    }
-
-    // initialize the timeline
-    vector<int> timeline(hyperperiod);
-    cout << "Timeline size: " << timeline.size() << endl;
-
-    // assign each task to a processor based on their priorities (periods)
-    for (auto task : tasks) {
-        for (int t = task.arrival_time; t < hyperperiod; t += task.period) {
-            int start_time = findEarliestAvailableTimeSlot(timeline, t, hyperperiod);
-            assignTaskToProcessor(timeline, task, start_time);
-        }
-    }
-
-    // print the schedule
-    cout << "Schedule using Rate Monotonic algorithm:" << endl;
-    for (int t = 0; t < hyperperiod; t++) {
-        if (timeline[t] != 0) {
-            cout << "t=" << t << ": Task " << timeline[t] << endl;
-        }
-        else {
-            cout << "t=" << t << ": ---" << endl;
-        }
-    }
+    //
 }
 
 
-// check if the tasks are schedulable
 
 void checkSchedulability(vector<Task>& tasks) {
     /*
-     * The tasks are schedulable if the sum of the deadlines divided by the periods is less than or equal to
-     * the number of tasks multiplied by (2^(1/n) - 1), where n is the number of tasks.
+     * The tasks are schedulable if the sum of the utilization factors is less than or equal to 1.
      */
-    int sum = 0;
-    for (auto & task : tasks) {
-        sum += task.deadline / task.period;
+    double sum = 0;
+    for (auto task : tasks) {
+        sum += (double) task.capacity / task.deadline;
     }
-
-    if (sum <= tasks.size() * (pow(2, 1.0 / tasks.size()) - 1)) {
-        cout << "The tasks are schedulable" << endl;
-        deadlineMonotonic(tasks);
-    } else {
-        cout << "The tasks are not schedulable" << endl;
+    if (sum <= 1) {
+        cout << "The tasks are schedulable." << endl;
+        // earliestDeadlineFirst(tasks);
+    }
+    else {
+        cout << "The tasks are not schedulable." << endl;
     }
 }
 

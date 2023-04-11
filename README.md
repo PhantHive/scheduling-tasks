@@ -18,7 +18,7 @@ not yet.
 ## Algorithms
 
 - [x] Rate Monothonic
-- [] Deadline Monotonic
+- [x] Deadline Monotonic
 - [] Earliest Deadline First
 - [] Least Laxity First
 

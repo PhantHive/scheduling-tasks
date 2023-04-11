@@ -16,9 +16,10 @@ struct Task {
     int period;         // period of task
     int deadline;       // deadline of task
     int capacity;       // capacity of task
+    int remaining_capacity; // remaining capacity of task
 
-    Task(int id, int arrival_time, int period, int deadline, int capacity)
-            : id(id), arrival_time(arrival_time), period(period), deadline(deadline), capacity(capacity) {}
+    Task(int id, int arrival_time, int period, int deadline, int capacity, int remaining_capacity)
+            : id(id), arrival_time(arrival_time), period(period), deadline(deadline), capacity(capacity), remaining_capacity(remaining_capacity) {}
 
     bool operator<(const Task& other) const {
         return period < other.period;
@@ -31,19 +32,25 @@ int findEarliestAvailableTimeSlot(const vector<int> &timeline, int t, int hyperp
      * If the time slot is available, return the time slot.
      */
     int start_time = t;
+
     while (timeline[start_time % hyperperiod] != 0) {
         start_time++;
     }
     return start_time;
 }
 
-void assignTaskToProcessor(vector<int>& timeline, const Task& task, int start_time) {
+void assignTaskToProcessor(vector<int>& timeline, const Task& task, vector<Task>& tasks, int start_time) {
     /*
      * Assign a task to a processor.
      * The task is assigned to the processor for the duration of its capacity.
      */
     for (int i = start_time; i < start_time + task.capacity; i++) {
-        timeline[i % timeline.size()] = task.id;
+        int t = i % timeline.size();
+        if (timeline[t] != 0 && tasks[timeline[t]-1].period < task.period) {
+            // task cannot be scheduled starting at this time, as there is another task with a shorter period running
+            break;
+        }
+        timeline[t] = task.id;
     }
 }
 
@@ -62,13 +69,30 @@ void rateMonotonic(vector<Task>& tasks) {
     vector<int> timeline(hyperperiod);
     cout << "Timeline size: " << timeline.size() << endl;
 
-    // assign each task to a processor based on their priorities (periods)
-    for (auto task : tasks) {
-        for (int t = task.arrival_time; t < hyperperiod; t += task.period) {
-            int start_time = findEarliestAvailableTimeSlot(timeline, t, hyperperiod);
-            assignTaskToProcessor(timeline, task, start_time);
+
+    // schedule the tasks while there are capacity remaining for any task during a period
+    for (int t = 0; t < hyperperiod; t++) {
+        for (auto & task : tasks) {
+            if (t % task.period == 0) {
+                // reset the remaining capacity of the task
+                task.remaining_capacity = task.capacity;
+            }
+        }
+
+        for (auto & task : tasks) {
+            if (task.remaining_capacity > 0) {
+                // find the earliest available time slot for the task to be scheduled
+                int start_time = findEarliestAvailableTimeSlot(timeline, t, hyperperiod);
+
+                // assign the task to the processor
+                assignTaskToProcessor(timeline, task, tasks, start_time);
+
+                // update the remaining capacity of the task
+                task.remaining_capacity -= (start_time - t + task.capacity);
+            }
         }
     }
+
 
     // print the schedule
     cout << "Schedule using Rate Monotonic algorithm:" << endl;
@@ -118,7 +142,7 @@ int main() {
     for (int i = 0; i < n; i++) {
         cout << "Enter the arrival time, period, deadline and capacity of task " << i+1 << ": ";
         cin >> arrival_time >> period >> deadline >> capacity;
-        tasks.emplace_back(i+1, arrival_time, period, deadline, capacity);
+        tasks.emplace_back(i+1, arrival_time, period, deadline, capacity, capacity);
     }
 
     checkSchedulability(tasks);
