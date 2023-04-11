@@ -4,23 +4,47 @@
 
 #include <iostream>
 #include <vector>
-#include <algorithm>
-#include <numeric>
-#include <cmath>
+#include "monotonic-scheduler.h"
+#include "rate-monotonic.h"
+#include "deadline-monotonic.h"
+
+
 
 using namespace std;
 
-struct Task {
-    int id;             // task id
-    int arrival_time;   // arrival time of task
-    int period;         // period of task
-    int deadline;       // deadline of task
-    int capacity;       // capacity of task
+int main() {
+    int n;
+    cout << "Enter the number of tasks: ";
+    cin >> n;
 
-    Task(int id, int arrival_time, int period, int deadline, int capacity, int i)
-            : id(id), arrival_time(arrival_time), period(period), deadline(deadline), capacity(capacity) {}
+    // variables for tasks
+    int arrival_time;
+    int period;
+    int deadline;
+    int capacity;
 
-    bool operator<(const Task& other) const {
-        return deadline < other.deadline;
+    vector<Task> tasks;
+    for (int i = 0; i < n; i++) {
+        cout << "Enter the arrival time, period, deadline and capacity of task " << i+1 << ": ";
+        cin >> arrival_time >> period >> deadline >> capacity;
+        tasks.emplace_back(i+1, arrival_time, period, deadline, capacity);
     }
-};
+
+    // ask user for the method RM/DM
+    int method;
+    cout << "Enter 1 for Rate Monotonic or 2 for Deadline Monotonic: ";
+    cin >> method;
+
+    if (method == 1) {
+        RateMonotonic rm(tasks);
+        rm.printSchedule();
+    } else if (method == 2) {
+        DeadlineMonotonic dm(tasks);
+        dm.printSchedule();
+    } else {
+        cout << "Invalid method" << endl;
+    }
+
+
+    return 0;
+}
