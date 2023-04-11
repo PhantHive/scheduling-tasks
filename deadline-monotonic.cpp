@@ -1,5 +1,5 @@
 //
-// Created by sunn on 06/04/2023.
+// Created by Zakaria on 11/04/2023.
 //
 
 #include <iostream>
@@ -21,7 +21,7 @@ struct Task {
             : id(id), arrival_time(arrival_time), period(period), deadline(deadline), capacity(capacity) {}
 
     bool operator<(const Task& other) const {
-        return period < other.period;
+        return deadline < other.deadline;
     }
 };
 
@@ -48,18 +48,19 @@ void assignTaskToProcessor(vector<int>& timeline, const Task& task, int start_ti
 }
 
 
-void rateMonotonic(vector<Task>& tasks) {
+void deadlineMonotonic(vector<Task>& tasks) {
     // sort the tasks by their periods (shortest period => highest priority)
     sort(tasks.begin(), tasks.end());
 
     // calculate the hyperperiod (lcm of all task periods)
     int hyperperiod = 1;
     for (auto task : tasks) {
-        hyperperiod = lcm(hyperperiod, task.period);
+        hyperperiod = lcm(hyperperiod, task.deadline);
     }
 
     // initialize the timeline
     vector<int> timeline(hyperperiod);
+    cout << "Timeline size: " << timeline.size() << endl;
 
     // assign each task to a processor based on their priorities (periods)
     for (auto task : tasks) {
@@ -96,7 +97,7 @@ void checkSchedulability(vector<Task>& tasks) {
 
     if (sum <= tasks.size() * (pow(2, 1.0 / tasks.size()) - 1)) {
         cout << "The tasks are schedulable" << endl;
-        rateMonotonic(tasks);
+        deadlineMonotonic(tasks);
     } else {
         cout << "The tasks are not schedulable" << endl;
     }
@@ -124,4 +125,3 @@ int main() {
 
     return 0;
 }
-
