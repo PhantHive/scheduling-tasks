@@ -8,6 +8,7 @@
 #include "rate-monotonic.h"
 #include "deadline-monotonic.h"
 #include "earliest-deadline-first.h"
+#include "least-laxity-first.h"
 
 
 
@@ -33,8 +34,13 @@ int main() {
 
     // ask user for the method RM/DM
     int method;
-    cout << "Enter 1 for Rate Monotonic or 2 for Deadline Monotonic"
-            "\nor 3 for Earliest Deadline First: ";
+    cout << "Enter:" << endl
+            << " 1 for Rate Monotonic" << endl
+            << " 2 for Deadline Monotonic" << endl
+            << " 3 for Earliest Deadline First" << endl
+            << " 4 for Least Laxity First" << endl
+            << "> ";
+
     cin >> method;
 
     if (method == 1) {
@@ -46,6 +52,9 @@ int main() {
     } else if (method == 3) {
         EarliestDeadlineFirst edf(tasks);
         edf.printSchedule();
+    } else if (method == 4) {
+        LeastLaxityFirst llf(tasks);
+        llf.printSchedule();
     } else {
         cout << "Invalid method" << endl;
     }
