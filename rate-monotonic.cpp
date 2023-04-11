@@ -39,18 +39,26 @@ int findEarliestAvailableTimeSlot(const vector<int> &timeline, int t, int hyperp
     return start_time;
 }
 
-void assignTaskToProcessor(vector<int>& timeline, const Task& task, vector<Task>& tasks, int start_time) {
+void assignTaskToProcessor(vector<int>& timeline, Task& task, vector<Task>& tasks, int start_time) {
     /*
      * Assign a task to a processor.
      * The task is assigned to the processor for the duration of its capacity.
      */
-    for (int i = start_time; i < start_time + task.capacity; i++) {
-        int t = i % timeline.size();
-        if (timeline[t] != 0 && tasks[timeline[t]-1].period < task.period) {
-            // task cannot be scheduled starting at this time, as there is another task with a shorter period running
+
+    for (int i = start_time; i < start_time + task.period; i++) {
+        if (task.remaining_capacity == 0) {
+            task.remaining_capacity = task.capacity;
             break;
         }
-        timeline[t] = task.id;
+        int t = i % timeline.size();
+        if (timeline[t] != 0) {
+            // jump after the capacity of the task with higher priority
+            continue;
+        }
+        else {
+            timeline[t] = task.id;
+            task.remaining_capacity--;
+        }
     }
 }
 
@@ -76,6 +84,7 @@ void rateMonotonic(vector<Task>& tasks) {
             assignTaskToProcessor(timeline, task, tasks, start_time);
         }
     }
+
 
     // print the schedule
     cout << "Schedule using Rate Monotonic algorithm:" << endl;
