@@ -19,8 +19,10 @@ not yet.
 
 - [x] Rate Monothonic
 - [x] Deadline Monotonic
-- [] Earliest Deadline First
-- [] Least Laxity First
+- [x] Earliest Deadline First
+- [] Least Laxity First : code is not working :/
+
+PS: I wasn't able to implement LLF for now. I will try to fix it later.
 
 
 

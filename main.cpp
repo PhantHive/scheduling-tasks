@@ -38,7 +38,7 @@ int main() {
             << " 1 for Rate Monotonic" << endl
             << " 2 for Deadline Monotonic" << endl
             << " 3 for Earliest Deadline First" << endl
-            << " 4 for Least Laxity First" << endl
+            << " 4 /!\\ for Least Laxity First (is not working properly...)" << endl
             << "> ";
 
     cin >> method;
