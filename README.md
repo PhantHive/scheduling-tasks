@@ -13,6 +13,7 @@
 ![img_1.png](img_1.png)
 
 </div>
+
 ---
 
 In this project, I implemented some algorithms for scheduling tasks.
