@@ -20,7 +20,29 @@ In this project, I implemented some algorithms for scheduling tasks.
 
 ## Structure
 
-not yet.
+[//]: # (make a table containing all .h files and the main.cpp with description)
+
+| File               | Description                                         |
+|--------------------|-----------------------------------------------------|
+| `main.cpp`         | Main file                                           |
+| `rate-monotonic.h` | Rate Monotonic algorithm                            |
+| `deadline-monotonic.h` | Deadline Monotonic algorithm                        |
+| `earliest-deadline-first.h` | Earliest Deadline First algorithm                   |
+| `least-laxity-first.h` | Least Laxity First algorithm (not working properly) |
+
+>> Note: I used a `Task` class to represent a task. It has the following attributes:
+> - `id` : task id
+> - `period` : task period
+> - `deadline` : task deadline
+> - `remaining_time` : remaining time to execute the task
+> - `arrival_time` : task arrival time
+> - `capacity` : task execution time
+
+>> monotonic-scheduler.h : allow common functions for all algorithms such as:
+> - `checkSchedulability` : check if the tasks are schedulable or not
+> - `findEarliestAvailableTimeSlot` : find the earliest available time slot
+
+
 
 ## Algorithms
 
